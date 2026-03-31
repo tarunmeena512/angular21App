@@ -1,0 +1,61 @@
+<div class="dashboard-container">
+  <div class="welcome-section">
+    <h1>Welcome, {{ username() }}!</h1>
+    <p>Email: {{ email() }}</p>
+  </div>
+
+  <div class="table-section">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <div style="margin-right: auto">
+        <h2>Users List</h2>
+      </div>
+
+      <div class="search-section">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Search users</mat-label>
+          <input matInput (input)="onSearch($event)" placeholder="Ex. John Doe" />
+        </mat-form-field>
+      </div>
+
+      <button mat-stroked-button type="button" (click)="reloadUsers()">Retry</button>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading users...</p>
+      </div>
+    } @else if (error()) {
+      <div class="error-message">
+        <p>{{ error()?.message }}</p>
+      </div>
+    } @else if (filteredUsers().length > 0) {
+      <table mat-table [dataSource]="filteredUsers()" class="users-table">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef>Phone</th>
+          <td mat-cell *matCellDef="let element">{{ element.phone }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns; trackBy: trackByUserId"></tr>
+      </table>
+    } @else {
+      <div class="no-data">No users found</div>
+    }
+  </div>
+</div>
