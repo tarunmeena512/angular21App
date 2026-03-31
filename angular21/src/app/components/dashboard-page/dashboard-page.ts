@@ -8,14 +8,24 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { UserService } from '../../services/users.service';
 import { User } from '../../models';
 import { UsersStore } from '../../stores/dashboard.store';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [CommonModule, MatTableModule, MatInputModule, MatFormFieldModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatIconModule,
+    FormsModule,
+    MatButtonModule,
+    MatInputModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [UsersStore],
   templateUrl: './dashboard-page.html',
