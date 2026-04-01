@@ -6,43 +6,51 @@
 
   <div class="table-section">
     <div style="display: flex; align-items: center; gap: 12px">
-      <div style="flex: 0 0 80%">
+      <div style="flex: 0 0 70%">
         <h2>Users List</h2>
       </div>
 
-      <div class="search-section">
+      <div class="search-section" style="flex: 1">
         <mat-form-field style="width: 100%">
           <mat-label>Search users</mat-label>
           <input
             matInput
             type="text"
-            (input)="onSearch($event)"
-            [(ngModel)]="searchQuery"
+            #searchInput
+            [value]="usersStore.searchQuery()"
+            (input)="usersStore.onSearch(searchInput.value)"
             placeholder="Ex. John Doe"
           />
-          @if (searchQuery()) {
-            <button matSuffix matIconButton aria-label="Clear" (click)="searchQuery.set('')">
+          @if (usersStore.searchQuery()) {
+            <button matSuffix matIconButton aria-label="Clear" (click)="usersStore.onSearch('')">
               <mat-icon>close</mat-icon>
             </button>
           }
         </mat-form-field>
       </div>
-      <div>
-        <button mat-stroked-button type="button" (click)="reloadUsers()">Reload</button>
+      <div style="flex: 1">
+        <button style="width: 100%" mat-stroked-button type="button" (click)="reloadUsers()">
+          Reload
+        </button>
       </div>
     </div>
 
-    @if (isLoading()) {
+    @if (usersStore?.isLoading()) {
       <div class="loading">
         <div class="spinner"></div>
         <p>Loading users...</p>
       </div>
-    } @else if (error()) {
+    } @else if (usersStore?.error()) {
       <div class="error-message">
-        <p>{{ error()?.message }}</p>
+        <p>{{ usersStore.error()?.message }}</p>
       </div>
-    } @else if (filteredUsers().length > 0) {
-      <table mat-table [dataSource]="filteredUsers()" class="users-table">
+    } @else if (usersStore.filteredUsers().length > 0) {
+      <table
+        mat-table
+        [dataSource]="usersStore.filteredUsers()"
+        [trackBy]="trackByUserId"
+        class="users-table"
+      >
         <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef>ID</th>
           <td mat-cell *matCellDef="let element">{{ element.id }}</td>
@@ -64,7 +72,7 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns; trackBy: trackByUserId"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     } @else {
       <div class="no-data">No users found</div>
